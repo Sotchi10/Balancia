@@ -69,11 +69,22 @@ void main() {
     });
 
     group('getExpensesByCategory', () {
-      test('Groups expenses by category', () {
+      test('Sums multiple expenses in the same category', () {
+        final transactions = createTransactionService();
+        transactions.addTransaction(
+          Transaction(
+            id: 4,
+            description: 'More groceries',
+            amount: 50,
+            type: TransactionType.expense,
+            categoryId: 10,
+            date: DateTime(2026, 11, 8),
+          ),
+        );
+
         expect(
-          ReportService(createTransactionService())
-              .getExpensesByCategory(11, 2026),
-          {10: 200, 11: 100},
+          ReportService(transactions).getExpensesByCategory(11, 2026),
+          {10: 250, 11: 100},
         );
       });
     });

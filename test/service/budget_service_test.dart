@@ -15,6 +15,20 @@ void main() {
         expect(allocations[BudgetType.wants], 300);
         expect(allocations[BudgetType.savings], 200);
       });
+
+      test('Rejects month or year when supplied separately', () {
+        final service = BudgetService();
+        final budget = Budget(monthlyIncome: 1000);
+
+        expect(
+          () => service.calculateAllocations(budget, month: 11),
+          throwsException,
+        );
+        expect(
+          () => service.calculateAllocations(budget, year: 2026),
+          throwsException,
+        );
+      });
     });
 
     group('updateBudget', () {
@@ -112,19 +126,27 @@ void main() {
         expect(category.spendingLimit, 400);
       });
 
-      test('Updates an existing limit', () {
-        final category = Category(
+      test('Accepts combined limits exactly equal to the allocation', () {
+        final rent = Category(
           id: 1,
           name: 'Rent',
           budgetType: BudgetType.needs,
           spendingLimit: 300,
         );
+        final utilities = Category(
+          id: 2,
+          name: 'Utilities',
+          budgetType: BudgetType.needs,
+        );
 
-        BudgetService().setSpendingLimit(Budget(monthlyIncome: 1000), category, 400, [
-          category,
-        ]);
+        BudgetService().setSpendingLimit(
+          Budget(monthlyIncome: 1000),
+          utilities,
+          200,
+          [rent, utilities],
+        );
 
-        expect(category.spendingLimit, 400);
+        expect(utilities.spendingLimit, 200);
       });
 
       test('Rejects limits on each categories', () {

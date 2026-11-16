@@ -52,6 +52,20 @@ void main() {
         );
         expect(service.getTransactions(), isEmpty);
       });
+
+      test('Rejects an empty or whitespace-only description', () {
+        final service = TransactionService();
+
+        expect(
+          () => service.addTransaction(createTransaction(description: '')),
+          throwsException,
+        );
+        expect(
+          () => service.addTransaction(createTransaction(description: '   ')),
+          throwsException,
+        );
+        expect(service.getTransactions(), isEmpty);
+      });
     });
 
     group('addUnexpectedIncome', () {

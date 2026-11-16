@@ -18,7 +18,7 @@ class BudgetService {
       budget.wantsPercent,
       budget.savingsPercent,
     );
-    if ((month == null) && (year == null)) {
+    if ((month == null) != (year == null)) {
       throw Exception('Month and year must be provided together.');
     }
     if (month != null && (month < 1 || month > 12)) {
